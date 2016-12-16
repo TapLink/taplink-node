@@ -67,7 +67,7 @@ TapLink.prototype = {
     //      o newHash2Hex  : a new value for 'hash2' corresponding with new version id, otherwise undefined
     verifyPassword: function(hash1Hex, hash2ExpectedHex, versionId, callback) {
         var hash1 = new Buffer(hash1Hex, 'hex')
-        this.getSalt(hash1Hex, versionId, function(err, salt2Hex, oldVersionId, newVersionId, newSalt2Hex) {
+        this.getSalt(hash1Hex, versionId, function(err, salt2Hex, oldVersionId, newSalt2Hex, newVersionId) {
             if (err) return callback(err);
 
             var salt2 = new Buffer(salt2Hex, 'hex');
