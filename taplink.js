@@ -23,6 +23,7 @@ function TapLink(appId) {
 
 TapLink.prototype = {
     init: function(callback) {
+        var self = this;
         var configRequest = {
             host: 'api.taplink.co',
             path: '/' + this.appId,
@@ -39,7 +40,7 @@ TapLink.prototype = {
             res.on('end', function() {
                 if (res.statusCode != 200) return callback(res);
                 try {
-                    this.options = JSON.parse(res.body)
+                    self.options = JSON.parse(res.body)
                 } catch (err) {
                     return callback(err);
                 }
@@ -140,7 +141,7 @@ TapLink.prototype = {
 
                 // If 'versionId' specified in URL, then response may include upgrade info (new_vid, and new_s2)
                 // Otherwise, response will simply include 'vid' of the response
-                if (versionId != '')
+                if (versionId == '')
                     callback(null, response.s2, response.vid);
                 else
                     callback(null, response.s2, versionId, response.new_s2, response.new_vid);
