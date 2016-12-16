@@ -97,7 +97,8 @@ TapLink.prototype = {
             if (err) return callback(err);
 
             var salt2 = new Buffer(salt2Hex, 'hex');
-            var hash2Hex = crypto.createHmac('sha512', salt2).update(hash1Hex).digest('hex');
+            var hash1 = new Buffer(hash1Hex, 'hex');
+            var hash2Hex = crypto.createHmac('sha512', salt2).update(hash1).digest('hex');
             callback(null, hash2Hex, versionId)
         });
     },
