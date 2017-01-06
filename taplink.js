@@ -215,8 +215,30 @@ function statsTracking(self) {
         });
 
         // Last Step: Re-order the server list in order of reliability & performance
-        //   1) Calculate error rate and order by error rate
+        //   1) Calculate failure rate and order by failure rate
         //   2) For equal error rates (e.g. zero errors) order by latency
+
+        // Push into a sortable array the host, (error + tiemout) rate, and the latency
+        // Note, treat a null latency (unused server) as a high latency to keep the server un-preferred
+        var hostFailRate = [];
+        for (var host in self.stats.currentErrors) {
+            hostFailRate.push([
+                host,
+                (self.stats.currentTimeouts[host] + self.stats.currentErrors[host]) / self.stats.currentRequests[host],
+                self.stats.currentLatency[host] || 9999,
+            ]);
+        }
+
+        // Sort the array first on the failure rate, but if failure rate is zero, then sort on latency
+        // Note a server which is not used at all in the last minute should not be preferred
+        hostFailRate.sort(function(a, b) { return a[1] - b[1] || a[2] - b[2]; });
+
+        // Apply the new host list
+        var newHostList = [];
+        for (var i = 0, len = hostFailRate.length; i < len; ++i) {
+            newHostList.push(hostFailRate[i][0]);
+        }
+        self.options.servers = newHostList;
     } else {
         self.stats = null;
         self.statsInt = null;
